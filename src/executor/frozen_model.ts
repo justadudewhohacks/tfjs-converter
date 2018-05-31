@@ -16,6 +16,7 @@
  */
 
 import * as tfc from '@tensorflow/tfjs-core';
+import { tfcPatched } from '../tfcpatched';
 import * as Url from 'url';
 
 import {tensorflow} from '../data/compiled_api';
@@ -102,7 +103,7 @@ export class FrozenModel implements tfc.InferenceModel {
     const [graph, ] = await Promise.all([graphPromise, manifestPromise]);
 
     this.version = `${graph.versions.producer}.${graph.versions.minConsumer}`;
-    const weightMap = await tfc.io.loadWeights(
+    const weightMap = await tfcPatched.loadWeights(
         this.weightManifest, this.pathPrefix, undefined, this.requestOption);
     this.executor =
         new GraphExecutor(OperationMapper.Instance.transformGraph(graph));

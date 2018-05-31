@@ -14,5 +14,8 @@
  * limitations under the License.
  * =============================================================================
  */
+import * as tfc from '@tensorflow/tfjs-core';
+
+export {tfc};
 export {FrozenModel, loadFrozenModel} from './executor/frozen_model';
 export {version as version_converter} from './version';

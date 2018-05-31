@@ -44,9 +44,9 @@ export default {
     file: 'dist/tf-converter.js',
     format: 'umd',
     name: 'tf',
-    globals: {'crypto': 'crypto', '@tensorflow/tfjs-core': 'tf'}
+    globals: {'crypto': 'crypto'}
   },
-  external: ['crypto', '@tensorflow/tfjs-core'],
+  external: ['crypto'],
   onwarn: warning => {
     let {code} = warning;
     if (code === 'CIRCULAR_DEPENDENCY' ||

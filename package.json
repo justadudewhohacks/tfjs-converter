@@ -17,7 +17,6 @@
     "@tensorflow/tfjs-core": "0.11.2"
   },
   "devDependencies": {
-    "@tensorflow/tfjs-core": "0.11.2",
     "@types/jasmine": "~2.8.6",
     "@types/node-fetch": "1.6.9",
     "ajv": "~6.3.0",
@@ -50,15 +49,10 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig-es5.json && tsc && copyfiles -f src/data/compiled_api.* dist/data && copyfiles -f src/operations/op_list/*.json dist/operations/op_list && copyfiles -f src/operations/typings.d.ts dist/operations && copyfiles -f src/data/compiled_api.d.ts src/data/es6/compiled_api.js dist-es6/data && copyfiles -f src/operations/op_list/*.json dist-es6/operations/op_list && copyfiles -f src/operations/typings.d.ts dist-es6/operations",
-    "build-npm": "./scripts/build-npm.sh",
-    "link-local": "yalc link",
-    "publish-local": "yarn build-npm && yalc push",
-    "test": "karma start",
-    "test-travis": "karma start --browsers='bs_firefox_mac,bs_chrome_mac' --singleRun",
-    "lint": "tslint -p . -t verbose",
-    "make-version": "sh -c ./scripts/make-version"
+    "bundle": "rollup -c rollup.config.js"
   },
   "dependencies": {
+    "@tensorflow/tfjs-core": "^0.11.2",
     "@types/long": "~3.0.32",
     "protobufjs": "~6.8.0",
     "url": "^0.11.0"
