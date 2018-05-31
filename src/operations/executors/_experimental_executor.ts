@@ -3,13 +3,13 @@ import { NamedTensorsMap } from '../../data/types';
 import { ExecutionContext } from '../../executor/execution_context';
 import { Node } from '../types';
 import { getParamValue } from './utils';
-import { tfcPatched } from '../../tfcpatched/index';
+import { tfcPatched, TensorArray } from '../../tfcpatched';
 
 export function executeExperimentalOp(
   node: Node,
   tensorMap: NamedTensorsMap,
   context: ExecutionContext
-): tfc.Tensor[] {
+): tfc.Tensor[]|TensorArray[]|Array<tfc.Tensor|TensorArray> {
   switch (node.op) {
     case 'unpack': {
       const value = getParamValue('value', node, tensorMap, context) as tfc.Tensor;
@@ -33,6 +33,26 @@ export function executeExperimentalOp(
           maxOutputSize,
           iouThreshold,
           scoreThreshold
+        )
+      ];
+    }
+    case 'tensorArray': {
+      const size = getParamValue('size', node, tensorMap, context) as tfc.Tensor1D;
+      const dtype = getParamValue('dtype', node, tensorMap, context) as string;
+      const elementShape = getParamValue('elementShape', node, tensorMap, context) as number[];
+      const dynamicSize = getParamValue('dynamicSize', node, tensorMap, context) as boolean;
+      const clearAfterRead = getParamValue('clearAfterRead', node, tensorMap, context) as boolean;
+      const identicalElementShapes = getParamValue('identicalElementShapes', node, tensorMap, context) as boolean;
+      const tensorArrayName = getParamValue('tensorArrayName', node, tensorMap, context) as string;
+      return [
+        tfcPatched.tensorArray(
+          size,
+          dtype,
+          elementShape,
+          dynamicSize,
+          clearAfterRead,
+          identicalElementShapes,
+          tensorArrayName
         )
       ];
     }

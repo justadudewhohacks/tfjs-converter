@@ -18,15 +18,17 @@ import { NamedTensorMap, Tensor, tidy } from '@tensorflow/tfjs-core';
 
 import { NamedTensorsMap } from '../data/types';
 import { executeExperimentalOp } from '../operations/executors/_experimental_executor';
-import { getNodeNameAndIndex, getTensor } from '../operations/executors/utils';
+import { getNodeNameAndIndex, getTensor, getTensorOrTensorArray } from '../operations/executors/utils';
 import { executeOp as _executeOp } from '../operations/operation_executor';
 import { Graph, Node } from '../operations/types';
 import { ExecutionContext, ExecutionContextInfo } from './execution_context';
+import { TensorArray } from '../tfcpatched';
 
 function isExperimentalOp(node: Node): boolean {
   const experimentalOps = [
-    'unstack',
-    'nonMaxSuppression'
+    'unpack',
+    'nonMaxSuppression',
+    'tensorArray'
   ];
   return experimentalOps.some(op => op === node.op);
 }
@@ -35,7 +37,11 @@ function executeOp(
   node: Node,
   tensorMap: NamedTensorsMap,
   context: ExecutionContext
-): Tensor[]|Promise<Tensor[]> {
+): Array<Tensor|TensorArray>|Promise<Array<Tensor|TensorArray>> {
+
+  if (node.op === 'const') {
+    return tensorMap[node.name];
+  }
 
   if (isExperimentalOp(node)) {
     return executeExperimentalOp(node, tensorMap, context);
@@ -59,7 +65,8 @@ export class GraphExecutor {
   }
   set weightMap(weightMap: NamedTensorsMap) {
     const weightIds = Object.keys(weightMap).map(
-        key => weightMap[key].map(tensor => tensor.id));
+        key => weightMap[key].filter(el => el instanceof Tensor).map((tensor: Tensor) => tensor.id)
+      );
     this.weightIds = [].concat.apply([], weightIds);
     this._weightMap = weightMap;
   }
@@ -152,19 +159,27 @@ export class GraphExecutor {
     const results = this.findOutputs(tensors, context, outputs);
 
     // dispose all the intermediate tensors
-    const outputIds = Object.keys(results).map(key => results[key].id);
+    const outputIds = Object.keys(results)
+      .map(key => results[key])
+      .filter(el => el instanceof Tensor)
+      .map(tensor => tensor.id);
     const inputIdArray =
-        Object.keys(inputs).map(key => inputs[key].map(input => input.id));
+        Object.keys(inputs)
+          .map(key => inputs[key]
+          .filter(el => el instanceof Tensor)
+          .map((tensor: Tensor) => tensor.id));
     const inputIds = [].concat.apply([], inputIdArray);
     Object.keys(tensors).forEach(key => {
       const tensorArray = tensors[key];
-      tensorArray.forEach(tensor => {
-        if (tensor && outputIds.indexOf(tensor.id) === -1 &&
-            inputIds.indexOf(tensor.id) === -1 &&
-            this.weightIds.indexOf(tensor.id) === -1) {
-          tensor.dispose();
-        }
-      });
+      tensorArray
+        .filter(el => el instanceof Tensor)
+        .forEach((tensor: Tensor) => {
+          if (tensor && outputIds.indexOf(tensor.id) === -1 &&
+              inputIds.indexOf(tensor.id) === -1 &&
+              this.weightIds.indexOf(tensor.id) === -1) {
+            tensor.dispose();
+          }
+        });
     });
     return results;
   }
@@ -198,14 +213,14 @@ export class GraphExecutor {
           // Merge op can be pushed if any of its inputs has value.
           if (childNode.op === 'merge') {
             if (childNode.inputNames.some(name => {
-                  return !!getTensor(name, tensorMap, context);
+                  return !!getTensorOrTensorArray(name, tensorMap, context);
                 })) {
               added[nodeName] = true;
               stack.push({contexts: context.currentContext, node: childNode});
             }
           } else  // Otherwise all inputs must to have value.
               if (childNode.inputNames.every(name => {
-                    return !!getTensor(name, tensorMap, context);
+                    return !!getTensorOrTensorArray(name, tensorMap, context);
                   })) {
             added[nodeName] = true;
             stack.push({contexts: context.currentContext, node: childNode});
@@ -237,7 +252,11 @@ export class GraphExecutor {
   dispose() {
     Object.keys(this.weightMap)
         .forEach(
-            key => this.weightMap[key].forEach(tensor => tensor.dispose()));
+            key => this.weightMap[key].forEach(tensor => {
+              if (tensor instanceof Tensor) {
+                tensor.dispose();
+              }
+            }));
   }
 
   private checkInput(inputs: NamedTensorsMap) {

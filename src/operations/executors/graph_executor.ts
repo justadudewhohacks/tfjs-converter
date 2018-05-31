@@ -29,7 +29,7 @@ export let executeOp: OpExecutor = (node: Node, tensorMap: NamedTensorsMap,
                                        tfc.Tensor[] => {
   switch (node.op) {
     case 'const': {
-      return tensorMap[node.name];
+      throw new Error('executeOp const should be handled seperately');
     }
     case 'placeholder':
       const def =

@@ -14,8 +14,10 @@
  * limitations under the License.
  * =============================================================================
  */
-import {Tensor} from '@tensorflow/tfjs-core';
+import { Tensor } from '@tensorflow/tfjs-core';
+
+import { TensorArray } from '../tfcpatched';
 
 export type NamedTensorsMap = {
-  [key: string]: Tensor[]
+  [key: string]: Array<Tensor | TensorArray>
 };

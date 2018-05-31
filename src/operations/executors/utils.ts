@@ -20,6 +20,7 @@ import * as tfc from '@tensorflow/tfjs-core';
 import {NamedTensorsMap} from '../../data/types';
 import {ExecutionContext} from '../../executor/execution_context';
 import {Node, ValueType} from '../types';
+import { TensorArray } from '../../tfcpatched';
 
 export function getParamValue(
     paramName: string, node: Node, tensorMap: NamedTensorsMap,
@@ -27,7 +28,7 @@ export function getParamValue(
   const param = node.params[paramName];
   if (param && param.inputIndex !== undefined) {
     if (param.type === 'tensor') {
-      return getTensor(node.inputNames[param.inputIndex], tensorMap, context);
+      return getTensorOrTensorArray(node.inputNames[param.inputIndex], tensorMap, context);
     }
     if (param.type === 'tensors') {
       const inputs = param.inputIndex === 0 ?
@@ -37,12 +38,12 @@ export function getParamValue(
                    param.inputIndex, -param.inputParamLength)) :
           node.inputNames.splice(param.inputIndex);
 
-      return inputs.map(name => getTensor(name, tensorMap, context));
+      return inputs.map(name => getTensorOrTensorArray(name, tensorMap, context));
     }
-    const data = Array.prototype.slice.call(
-        getTensor(
-            node.inputNames.slice(param.inputIndex)[0], tensorMap, context)
-            .dataSync());
+
+    const data = Array.prototype.slice.call((getTensor(
+      node.inputNames.slice(param.inputIndex)[0], tensorMap, context
+    )).dataSync());
     return param.type === 'number' ? data[0] : data;
   }
   return param && param.value;
@@ -54,9 +55,9 @@ export function getParamValue(
  * @param name Node input name
  * @param tensorsMap Tensors map keyed by the node
  */
-export function getTensor(
+export function getTensorOrTensorArray(
     name: string, tensorsMap: NamedTensorsMap,
-    context: ExecutionContext): tfc.Tensor {
+    context: ExecutionContext): tfc.Tensor|TensorArray {
   const [nodeName, index] = parseNodeName(name);
   const contextId = context.currentContextIds.find(contextId => {
     return !!tensorsMap[getNodeNameWithContextId(nodeName, contextId)];
@@ -65,6 +66,17 @@ export function getTensor(
   return contextId !== undefined ?
       tensorsMap[getNodeNameWithContextId(nodeName, contextId)][index] :
       undefined;
+}
+
+export function getTensor(
+  name: string, tensorsMap: NamedTensorsMap,
+  context: ExecutionContext): tfc.Tensor {
+
+  const t = getTensorOrTensorArray(name, tensorsMap, context);
+  if (t instanceof TensorArray) {
+    throw new Error('getTensor - did not expect TensorArray');
+  }
+  return t;
 }
 
 /**

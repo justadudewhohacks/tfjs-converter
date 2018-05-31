@@ -15,6 +15,7 @@
  * =============================================================================
  */
 import {Tensor} from '@tensorflow/tfjs-core';
+import { TensorArray } from '../tfcpatched';
 export type ParamTypes =
     'number'|'string'|'number[]'|'bool'|'shape'|'tensor'|'tensors'|'dtype';
 export type Category = 'arithmetic'|'basic_math'|'control'|'convolution'|
@@ -59,7 +60,7 @@ export interface Graph {
 }
 
 export type ValueType =
-    string|string[]|number|number[]|boolean|boolean[]|Tensor|Tensor[];
+    string|string[]|number|number[]|boolean|boolean[]|Tensor|TensorArray|Array<Tensor|TensorArray>;
 export interface ParamValue {
   value?: ValueType;
   inputIndex?: number;

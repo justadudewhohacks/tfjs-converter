@@ -76,7 +76,7 @@
       {
         "tfInputIndex": 0,
         "dlParamName": "size",
-        "type": "dtype"
+        "type": "tensor"
       },
       {
         "tfParamName": "dtype",

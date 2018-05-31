@@ -149,6 +149,10 @@ export class ExecutionContext {
   }
 
   getWeight(name: string): Tensor[] {
-    return this.weightMap[name];
+    const ts = this.weightMap[name];
+    if (!ts.every(el => el instanceof Tensor)) {
+      throw new Error('getWeight - expected Tensor[]');
+    }
+    return ts as Tensor[];
   }
 }
