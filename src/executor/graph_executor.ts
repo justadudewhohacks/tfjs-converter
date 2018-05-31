@@ -14,15 +14,34 @@
  * limitations under the License.
  * =============================================================================
  */
+import { NamedTensorMap, Tensor, tidy } from '@tensorflow/tfjs-core';
 
-import {NamedTensorMap, Tensor, tidy} from '@tensorflow/tfjs-core';
+import { NamedTensorsMap } from '../data/types';
+import { executeExperimentalOp } from '../operations/executors/_experimental_executor';
+import { getNodeNameAndIndex, getTensor } from '../operations/executors/utils';
+import { executeOp as _executeOp } from '../operations/operation_executor';
+import { Graph, Node } from '../operations/types';
+import { ExecutionContext, ExecutionContextInfo } from './execution_context';
 
-import {NamedTensorsMap} from '../data/types';
-import {getNodeNameAndIndex, getTensor} from '../operations/executors/utils';
-import {executeOp} from '../operations/operation_executor';
-import {Graph, Node} from '../operations/types';
+function isExperimentalOp(node: Node): boolean {
+  const experimentalOps = [
+    'unstack',
+    'nonMaxSuppression'
+  ];
+  return experimentalOps.some(op => op === node.op);
+}
 
-import {ExecutionContext, ExecutionContextInfo} from './execution_context';
+function executeOp(
+  node: Node,
+  tensorMap: NamedTensorsMap,
+  context: ExecutionContext
+): Tensor[]|Promise<Tensor[]> {
+
+  if (isExperimentalOp(node)) {
+    return executeExperimentalOp(node, tensorMap, context);
+  }
+  return _executeOp(node, tensorMap, context);
+}
 
 interface NodeWithContexts {
   contexts: ExecutionContextInfo[];

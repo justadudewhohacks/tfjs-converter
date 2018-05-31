@@ -1,0 +1,348 @@
+[
+  {
+    "tfOpName": "Rank",
+    "dlOpName": "rank",
+    "category": "array",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "input",
+        "type": "tensor"
+      },
+      {
+        "tfParamName": "output",
+        "dlParamName": "output",
+        "type": "dtype"
+      }
+    ]
+  },
+  {
+    "tfOpName": "Size",
+    "dlOpName": "size",
+    "category": "array",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "input",
+        "type": "tensor"
+      },
+      {
+        "tfParamName": "out_type",
+        "dlParamName": "outType",
+        "type": "dtype"
+      }
+    ]
+  },
+  {
+    "tfOpName": "Where",
+    "dlOpName": "where",
+    "category": "array",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "input",
+        "type": "dtype"
+      }
+    ]
+  },
+  {
+    "tfOpName": "Unpack",
+    "dlOpName": "unpack",
+    "category": "array",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "value",
+        "type": "tensor"
+      },
+      {
+        "tfParamName": "num",
+        "dlParamName": "num",
+        "type": "number"
+      },
+      {
+        "tfParamName": "axis",
+        "dlParamName": "axis",
+        "type": "number",
+        "defaultValue": 0
+      }
+    ]
+  },
+  {
+    "tfOpName": "TensorArrayV3",
+    "dlOpName": "tensorArray",
+    "category": "data_flow",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "size",
+        "type": "dtype"
+      },
+      {
+        "tfParamName": "dtype",
+        "dlParamName": "dtype",
+        "type": "dtype"
+      },
+      {
+        "tfParamName": "element_shape",
+        "dlParamName": "elementShape",
+        "type": "number[]"
+      },
+      {
+        "tfParamName": "dynamic_size",
+        "dlParamName": "dynamicSize",
+        "type": "bool",
+        "defaultValue": false
+      },
+      {
+        "tfParamName": "clear_after_read",
+        "dlParamName": "clearAfterRead",
+        "type": "bool",
+        "defaultValue": true
+      },
+      {
+        "tfParamName": "identical_element_shapes",
+        "dlParamName": "identicalElementShapes",
+        "type": "bool",
+        "defaultValue": false
+      },
+      {
+        "tfParamName": "tensor_array_name",
+        "dlParamName": "tensorArrayName",
+        "type": "string",
+        "defaultValue": ""
+      }
+    ]
+  },
+  {
+    "tfOpName": "TensorArrayReadV3",
+    "dlOpName": "tensorArrayRead",
+    "category": "data_flow",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "handle",
+        "type": "dtype"
+      },
+      {
+        "tfInputIndex": 1,
+        "dlParamName": "index",
+        "type": "dtype"
+      },
+      {
+        "tfInputIndex": 2,
+        "dlParamName": "flowIn",
+        "type": "dtype"
+      },
+      {
+        "tfParamName": "dtype",
+        "dlParamName": "dtype",
+        "type": "dtype"
+      }
+    ]
+  },
+  {
+    "tfOpName": "TensorArrayWriteV3",
+    "dlOpName": "tensorArrayWrite",
+    "category": "data_flow",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "handle",
+        "type": "string"
+      },
+      {
+        "tfInputIndex": 1,
+        "dlParamName": "index",
+        "type": "dtype"
+      },
+      {
+        "tfInputIndex": 2,
+        "dlParamName": "value",
+        "type": "dtype"
+      },
+      {
+        "tfInputIndex": 3,
+        "dlParamName": "flowIn",
+        "type": "dtype"
+      }
+    ]
+  },
+  {
+    "tfOpName": "TensorArrayScatterV3",
+    "dlOpName": "tensorArrayScatter",
+    "category": "data_flow",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "handle",
+        "type": "string"
+      },
+      {
+        "tfInputIndex": 1,
+        "dlParamName": "indices",
+        "type": "dtype"
+      },
+      {
+        "tfInputIndex": 2,
+        "dlParamName": "value",
+        "type": "dtype"
+      },
+      {
+        "tfInputIndex": 3,
+        "dlParamName": "flowIn",
+        "type": "dtype"
+      }
+    ]
+  },
+  {
+    "tfOpName": "TensorArrayGatherV3",
+    "dlOpName": "tensorArrayGather",
+    "category": "data_flow",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "handle",
+        "type": "string"
+      },
+      {
+        "tfInputIndex": 1,
+        "dlParamName": "indices",
+        "type": "dtype"
+      },
+      {
+        "tfInputIndex": 2,
+        "dlParamName": "value",
+        "type": "dtype"
+      },
+      {
+        "tfInputIndex": 3,
+        "dlParamName": "flowIn",
+        "type": "dtype"
+      },
+      {
+        "tfParamName": "element_shape",
+        "dlParamName": "elementShape",
+        "type": "number[]"
+      }
+    ]
+  },
+  {
+    "tfOpName": "TensorArraySizeV3",
+    "dlOpName": "tensorArraySize",
+    "category": "data_flow",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "handle",
+        "type": "string"
+      },
+      {
+        "tfInputIndex": 1,
+        "dlParamName": "flowIn",
+        "type": "dtype"
+      }
+    ]
+  },
+  {
+    "tfOpName": "NonMaxSuppression",
+    "dlOpName": "nonMaxSuppression",
+    "category": "image",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "boxes",
+        "type": "tensor"
+      },
+      {
+        "tfInputIndex": 1,
+        "dlParamName": "scores",
+        "type": "tensor"
+      },
+      {
+        "tfInputIndex": 2,
+        "dlParamName": "maxOutputSize",
+        "type": "tensor"
+      },
+      {
+        "tfInputIndex": 3,
+        "dlParamName": "iouThreshold",
+        "type": "dtype"
+      },
+      {
+        "tfInputIndex": 4,
+        "dlParamName": "scoreThreshold",
+        "type": "dtype"
+      }
+    ]
+  },
+  {
+    "tfOpName": "Assert",
+    "dlOpName": "assert",
+    "category": "logging",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "condition",
+        "type": "bool"
+      },
+      {
+        "tfInputIndex": 1,
+        "dlParamName": "data",
+        "type": "dtype[]"
+      },
+      {
+        "tfParamName": "summarize",
+        "dlParamName": "summarize",
+        "type": "number",
+        "defaultValue": 3
+      }
+    ]
+  },
+  {
+    "tfOpName": "All",
+    "dlOpName": "all",
+    "category": "math",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "input",
+        "type": "bool"
+      },
+      {
+        "tfInputIndex": 1,
+        "dlParamName": "reduction_indices",
+        "type": "dtype"
+      },
+      {
+        "tfParamName": "keep_dims",
+        "dlParamName": "keepDims",
+        "type": "bool",
+        "defaultValue": false
+      }
+    ]
+  },
+  {
+    "tfOpName": "TopKV2",
+    "dlOpName": "topK",
+    "category": "nn",
+    "params": [
+      {
+        "tfInputIndex": 0,
+        "dlParamName": "input",
+        "type": "tensor"
+      },
+      {
+        "tfInputIndex": 1,
+        "dlParamName": "k",
+        "type": "number"
+      },
+      {
+        "tfParamName": "sorted",
+        "dlParamName": "sorted",
+        "type": "bool",
+        "defaultValue": true
+      }
+    ]
+  }
+]

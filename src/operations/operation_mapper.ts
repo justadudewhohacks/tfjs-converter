@@ -19,6 +19,7 @@ import {tensorflow} from '../data/compiled_api';
 
 import {getNodeNameAndIndex} from './executors/utils';
 
+import * as _experimental from './op_list/_experimental.json';
 import * as arithmetic from './op_list/arithmetic.json';
 import * as basicMath from './op_list/basic_math.json';
 import * as control from './op_list/control.json';
@@ -48,7 +49,7 @@ export class OperationMapper {
   // Loads the op mapping from the JSON file.
   private constructor() {
     const ops = [
-      arithmetic, basicMath, control, convolution, creation, logical, image,
+      _experimental, arithmetic, basicMath, control, convolution, creation, logical, image,
       graph, matrices, normalization, reduction, sliceJoin, transformation
     ];
     const mappersJson: OpMapper[] =
@@ -251,7 +252,7 @@ export class OperationMapper {
       attrs: {[key: string]: tensorflow.IAttrValue}, name: string,
       def: number[]): number[] {
     const param = attrs[name];
-    if (param) {
+    if (param && param.list) {
       return ((param.list.f && param.list.f.length ? param.list.f :
                                                      param.list.i))
                  .map(v => (typeof v === 'number') ? v : v['toInt']()) as
